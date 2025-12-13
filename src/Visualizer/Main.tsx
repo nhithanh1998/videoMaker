@@ -31,12 +31,17 @@ export const Visualizer = ({
   const { fps } = useVideoConfig();
 
   const rotate = useMemo(() => {
-    return (frame / (fps * 20)) * 360;
+    const t = frame / fps;
+
+    const baseSpeed = 0.008; // rpm – cực chậm
+    const baseRotate = t * baseSpeed * 360;
+
+    // micro oscillation để che stepping
+    const smooth = Math.sin(t * Math.PI * 2 * 0.25) * 0.15;
+
+    return baseRotate + smooth;
   }, [frame, fps]);
 
-  const stickVibrate = useMemo(() => {
-    return Math.sin(frame / 8) * 0.9;
-  }, [frame]);
 
   return (
     <AbsoluteFill>
@@ -87,11 +92,7 @@ export const Visualizer = ({
 
       <Img
         src={staticFile("stick.png")}
-        className="w-[400px] absolute z-20 -right-[250px] -top-[250px]"
-        style={{
-          transform: `rotate(${stickVibrate}deg)`,
-          transformOrigin: "85% 15%", // trục xoay tay kim
-        }}
+        className="w-[400px] absolute z-20 -right-[250px] -top-[300px]"
       />
       {/* Disc quay */}
       <div

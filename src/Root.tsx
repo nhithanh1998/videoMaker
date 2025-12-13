@@ -5,7 +5,7 @@ import { visualizerCompositionSchema } from "./helpers/schema";
 import { parseMedia } from "@remotion/media-parser";
 import { loadFont } from "@remotion/fonts";
 
-const FPS = 20;
+const FPS = 8;
 loadFont({
   family: "UTM",
   url: staticFile("fonts/utm.ttf"),
