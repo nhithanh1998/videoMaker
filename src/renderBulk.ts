@@ -21,7 +21,7 @@ for (const episode of data.episodes) {
     chapterEnd: episode.endChapter,
 
     audioFileUrl: `../public/${slug}/${episode.audio}`,
-    backgroundUrl: `../public/${slug}/bg.png`,
+    backgroundUrl: `../public/${slug}/bg.jpg`,
     discImgUrl: `../public/${slug}/disc.png`,
 
     audioOffsetInSeconds: 1,
@@ -46,6 +46,7 @@ for (const episode of data.episodes) {
       "--codec=h264", // ⬅️ ĐỔI Ở ĐÂY
       "--pixel-format=yuv420p",
       "--image-format=jpeg",
+      "--concurrency=16",
       "--jpeg-quality=80",
       "--audio-bitrate=64k",
       `--props=${propsPath}`,

@@ -26,7 +26,7 @@ export const RemotionRoot: React.FC = () => {
           episode: 1,
           chapterStart: 1,
           chapterEnd: 10,
-          backgroundUrl: staticFile("sample-bg.png"),
+          backgroundUrl: staticFile("sample-bg.jpg"),
           discImgUrl: staticFile("sample-disc.png"),
           audioFileUrl: staticFile("sample-episode.mp3"),
           audioOffsetInSeconds: 0,

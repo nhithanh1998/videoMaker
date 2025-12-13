@@ -59,7 +59,7 @@ export const Visualizer = ({
       />
 
       <Img
-        src={staticFile("atm.png")}
+        src={staticFile("atm.jpg")}
         className="h-[200px] object-cover absolute z-10 bottom-0 right-0"
       />
 
