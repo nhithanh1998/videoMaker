@@ -16,7 +16,7 @@ if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR, { recursive: true });
 const data = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
 
 for (const episode of data.episodes) {
-  const audioFileUrl = `../public/${slug}/${episode.audio}`;
+  const audioFileUrl = path.resolve("public", slug, episode.audio);
 
   const props = {
     bookTitle: data.title,
@@ -35,7 +35,7 @@ for (const episode of data.episodes) {
   // File video tạm từ Remotion
   const outFile = path.join(
     OUTPUT_DIR,
-    `tap-${String(episode.episodeNumber).padStart(3, "0")}.mp4`
+    `tap-${String(episode.episodeNumber).padStart(3, "0")}.mp4`,
   );
 
   console.log("Rendering video loop:", outFile);
@@ -48,25 +48,34 @@ for (const episode of data.episodes) {
       "--codec=h264",
       "--pixel-format=yuv420p",
       "--image-format=jpeg",
-      "--concurrency=16",
-      "--audio-bitrate=64k",
       `--props=${propsPath}`,
     ].join(" "),
-    { stdio: "inherit" }
+    { stdio: "inherit" },
   );
 
   // File MP4 hoàn chỉnh có audio
   const finalOutFile = path.join(
     OUTPUT_DIR,
-    `tap-${String(episode.episodeNumber).padStart(3, "0")}-full.mp4`
+    `tap-${String(episode.episodeNumber).padStart(3, "0")}-full.mp4`,
   );
 
   console.log("Muxing audio:", finalOutFile);
 
   // Ghép audio vào video loop
   execSync(
-    `ffmpeg -y -i "${outFile}" -i "${audioFileUrl}" -c:v copy -c:a aac -b:a 128k -shortest "${finalOutFile}"`,
-    { stdio: "inherit" }
+    `ffmpeg -y \
+   -stream_loop -1 \
+   -i "${outFile}" \
+   -i "${audioFileUrl}" \
+   -map 0:v:0 \
+   -map 1:a:0 \
+   -c:v copy \
+   -af "volume=1.2" \
+   -c:a aac \
+   -ac 2 \
+   -shortest \
+   "${finalOutFile}"`,
+    { stdio: "inherit" },
   );
 }
 
