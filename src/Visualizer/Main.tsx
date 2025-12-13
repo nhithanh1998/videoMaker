@@ -1,9 +1,7 @@
-import { AudioWaveform } from "./AudioWaveForm";
 import { useMemo } from "react";
 
 import {
   AbsoluteFill,
-  Html5Audio,
   Img,
   staticFile,
   useCurrentFrame,
@@ -15,7 +13,6 @@ export const Visualizer = ({
   episode,
   chapterStart,
   chapterEnd,
-  audioFileUrl,
   backgroundUrl,
   discImgUrl,
 }: {
@@ -23,7 +20,6 @@ export const Visualizer = ({
   episode: number;
   chapterStart: number;
   chapterEnd: number;
-  audioFileUrl: string;
   backgroundUrl: string;
   discImgUrl: string;
 }) => {
@@ -33,7 +29,7 @@ export const Visualizer = ({
   const rotate = useMemo(() => {
     const t = frame / fps;
 
-    const baseSpeed = 0.008; // rpm – cực chậm
+    const baseSpeed = 0.05;
     const baseRotate = t * baseSpeed * 360;
 
     // micro oscillation để che stepping
@@ -42,11 +38,8 @@ export const Visualizer = ({
     return baseRotate + smooth;
   }, [frame, fps]);
 
-
   return (
     <AbsoluteFill>
-      <Html5Audio src={audioFileUrl} />
-
       {/* Background */}
       <Img
         src={backgroundUrl}
@@ -81,13 +74,6 @@ export const Visualizer = ({
           </span>{" "}
           {chapterEnd}
         </p>
-        <AudioWaveform
-          audioSrc={audioFileUrl}
-          mirrorWave={false}
-          barColor="#fff"
-          numberOfSamples={64}
-          waveLinesToDisplay={16}
-        />
       </div>
 
       <Img
