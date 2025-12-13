@@ -1,0 +1,41 @@
+{
+  "name": "video-maker",
+  "version": "1.0.0",
+  "description": "My Remotion video",
+  "author": "Igor Samokhovets",
+  "repository": {},
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@remotion/cli": "4.0.384",
+    "@remotion/fonts": "^4.0.386",
+    "@remotion/google-fonts": "4.0.384",
+    "@remotion/media-parser": "4.0.384",
+    "@remotion/media-utils": "4.0.384",
+    "@remotion/tailwind-v4": "4.0.384",
+    "@remotion/zod-types": "4.0.384",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.384",
+    "tailwindcss": "4.0.0",
+    "zod": "3.22.3"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.384",
+    "@types/react": "19.0.0",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.6.0",
+    "typescript": "5.8.2"
+  },
+  "scripts": {
+    "render": "ts-node src/renderBulk.ts",
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}
