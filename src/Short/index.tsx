@@ -9,45 +9,45 @@ import { Caption } from "./Caption";
 import { TransitionFlash } from "./TransitionFlash";
 
 interface ShortProps {
-  images: string[];
-  durations: number[];
-  captions: string[];
+  images: number;       // số lượng hình, ví dụ 10
+  captions: string[];   // array 10 caption
 }
 
-export const Short: React.FC<ShortProps> = ({
-  images,
-  durations,
-  captions,
-}) => {
+export const Short: React.FC<ShortProps> = ({ images, captions }) => {
   const { fps } = useVideoConfig();
-  let from = 0;
+
+  // Tạo array đường dẫn hình
+  const imageList = Array.from(
+    { length: images },
+    (_, i) => `/shorts/hinh-${i + 1}.png`
+  );
+
+  // Mỗi hình 4 giây
+  const durationPerImage = 4 * fps;
 
   return (
     <AbsoluteFill>
-      {images.map((img, i) => {
-        const durationInFrames = durations[i] * fps;
+      {imageList.map((img, i) => {
+        const from = i * durationPerImage; // tính vị trí xuất hiện
 
-        const seq = (
+        return (
           <Sequence
             key={i}
             from={from}
-            durationInFrames={durationInFrames}
+            durationInFrames={durationPerImage}
           >
             <ImageSlide
               src={staticFile(img)}
-              durationInFrames={durationInFrames}
+              durationInFrames={durationPerImage}
               index={i}
             />
-            <Caption text={captions[i]} />
+            <Caption text={captions[i] ?? ""} />
           </Sequence>
         );
-
-        from += durationInFrames;
-        return seq;
       })}
 
-      {/* Flash transition */}
-      <Sequence from={from - 6} durationInFrames={6}>
+      {/* Flash transition cuối */}
+      <Sequence from={images * durationPerImage - 6} durationInFrames={6}>
         <TransitionFlash />
       </Sequence>
     </AbsoluteFill>

@@ -19,7 +19,7 @@ export const RemotionRoot: React.FC = () => {
         fps={FPS}
         defaultProps={{
           bookTitle:
-            "Không Phải Chứ Bạn Gái Ảo Của Ta Sao Lại Tu Thành Kiếm Tiên Rồi?",
+            "Kiếm Lai",
           episode: 1,
           chapterStart: 1,
           chapterEnd: 10,

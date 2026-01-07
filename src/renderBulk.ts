@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 
-const slug = "khong-phai-chu-ban-gai-ao-cua-ta-sao-lai-tu-thanh-kiem-tien-roi";
+const slug = "kiem-lai";
 
 const DATA_PATH = `public/${slug}/data.json`;
 const OUTPUT_DIR = `output/${slug}`;
