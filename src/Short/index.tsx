@@ -2,56 +2,54 @@ import {
   AbsoluteFill,
   Sequence,
   staticFile,
-  useCurrentFrame,
   useVideoConfig,
+  Audio,
 } from "remotion";
 import { ImageSlide } from "./ImageSlide";
-import { Caption } from "./Caption";
+import { AudioItem } from "../utils/getAudioDuration";
 
 interface ShortProps {
-  images: number;
-  captions: string[];
+  audios: AudioItem[];
 }
 
-export const Short: React.FC<ShortProps> = ({ images, captions }) => {
+export const Short: React.FC<ShortProps> = ({ audios }) => {
   const { fps } = useVideoConfig();
-  const frame = useCurrentFrame();
 
-  const imageList = Array.from(
-    { length: images },
-    (_, i) => `/shorts/hinh-${i + 1}.png`
+  const imageList = audios.map(
+    (_, i) => `/shorts/hinh-${i + 1}.png`,
   );
 
-  const durationPerImage = 4 * fps;
+  // duration = audio + buffer 0.5–1s
+  const durationsInFrames = audios.map((a) =>
+    Math.floor((a.duration + 0.7) * fps),
+  );
+
   const overlapFrames = Math.floor(0.7 * fps);
-  const step = durationPerImage - overlapFrames;
 
-  // Xác định caption hiện tại
-  const currentIndex = Math.min(
-    Math.floor(frame / step),
-    captions.length - 1
-  );
+  const starts: number[] = [];
+  durationsInFrames.reduce((acc, cur, i) => {
+    starts[i] = acc;
+    return acc + cur - overlapFrames;
+  }, 0);
 
   return (
     <AbsoluteFill>
-      {/* Image sequences */}
       {imageList.map((img, i) => (
         <Sequence
           key={i}
-          from={i * step}
-          durationInFrames={durationPerImage}
+          from={starts[i]}
+          durationInFrames={durationsInFrames[i]}
         >
           <ImageSlide
             src={staticFile(img)}
-            durationInFrames={durationPerImage}
+            durationInFrames={durationsInFrames[i]}
             fadeFrames={overlapFrames}
             index={i}
           />
+
+          <Audio src={staticFile(audios[i].src)} />
         </Sequence>
       ))}
-
-      {/* Caption luôn đứng yên */}
-      <Caption text={captions[currentIndex] ?? ""} />
     </AbsoluteFill>
   );
 };

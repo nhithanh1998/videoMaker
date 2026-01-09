@@ -11,7 +11,7 @@
     "@remotion/fonts": "^4.0.386",
     "@remotion/google-fonts": "4.0.384",
     "@remotion/media-parser": "4.0.384",
-    "@remotion/media-utils": "4.0.384",
+    "@remotion/media-utils": "^4.0.384",
     "@remotion/tailwind-v4": "4.0.384",
     "@remotion/zod-types": "4.0.384",
     "react": "19.0.0",

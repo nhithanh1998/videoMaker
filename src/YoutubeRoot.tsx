@@ -1,36 +1,38 @@
-import "./index.css";
+"use client";
+
 import { Composition } from "remotion";
 import { Short } from "./Short";
+import { getAudioDurations } from "./utils/getAudioDuration";
+
+const FPS = 30;
+const AUDIO_COUNT = 8;
 
 export const RemotionRoot: React.FC = () => {
-  const captions = [
-    "Trong thế giới tu tiên tàn khốc,",
-    "phàm nhân… chỉ là cỏ dại dưới chân tiên môn.",
-    "Lý Trường An không linh căn thượng đẳng,",
-    "không gia tộc chống lưng, cũng không được tông môn thu nhận.",
-    "Hắn lưu lạc phường thị, trở thành tán tu hèn mọn.",
-    "Trường sinh? Với hắn, từng là giấc mộng buồn cười.",
-    "Cho đến một ngày — hệ thống thức tỉnh.",
-    "【 mỗi ngày hỏi một quẻ 】",
-    "Biết trước cát – hung… chính là nghịch thiên cải mệnh.",
-    "Một phàm nhân. Một quẻ mỗi ngày. Hắn chọn sống đủ lâu.",
-  ];
   return (
-    <>
-      <Composition
-        id="YoutubeShort"
-        component={Short}
-        width={1080}
-        height={1920}
-        fps={30}
-        durationInFrames={30 * 40} // Số giây toàn video phải tính!!!! fps * số giây
-        defaultProps={{
-          images: 10,
-          durations: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-          captions,
-          // music: "/music/bg.mp3",
-        }}
-      />
-    </>
+    <Composition
+      id="YoutubeShort"
+      component={Short}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      durationInFrames={1} // placeholder
+      calculateMetadata={async () => {
+        const audios = await getAudioDurations(AUDIO_COUNT);
+
+        const totalDurationInFrames = Math.ceil(
+          audios.reduce(
+            (sum, a) => sum + a.duration + 0.7, // buffer 0.7s
+            0,
+          ) * FPS,
+        );
+
+        return {
+          durationInFrames: totalDurationInFrames,
+          props: {
+            audios,
+          },
+        };
+      }}
+    />
   );
 };
