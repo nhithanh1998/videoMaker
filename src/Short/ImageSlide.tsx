@@ -1,4 +1,10 @@
-import { AbsoluteFill, Img, interpolate, useCurrentFrame } from "remotion";
+import {
+  AbsoluteFill,
+  Img,
+  interpolate,
+  useCurrentFrame,
+  Easing,
+} from "remotion";
 
 interface Props {
   src: string;
@@ -6,6 +12,11 @@ interface Props {
   fadeFrames: number;
   index: number;
 }
+
+const rand = (seed: number) => {
+  const x = Math.sin(seed * 1337) * 10000;
+  return x - Math.floor(x);
+};
 
 export const ImageSlide: React.FC<Props> = ({
   src,
@@ -15,22 +26,54 @@ export const ImageSlide: React.FC<Props> = ({
 }) => {
   const frame = useCurrentFrame();
 
-  // Fade in đầu – fade out cuối
   const opacity = interpolate(
     frame,
     [0, fadeFrames, durationInFrames - fadeFrames, durationInFrames],
     [0, 1, 1, 0],
-    { extrapolate: "clamp" },
+    { extrapolate: "clamp" }
   );
 
-  // Ken Burns nhẹ
-  const scale = interpolate(frame, [0, durationInFrames], [1.05, 1.15]);
+  const preset = Math.floor(rand(index) * 5);
+  const ease = Easing.linear;
 
-  const translateY = interpolate(
-    frame,
-    [0, durationInFrames],
-    index % 2 === 0 ? [20, -20] : [-20, 20],
-  );
+  let scale = 1.1;
+  let x = 0;
+  let y = 0;
+
+  switch (preset) {
+    // 1. Zoom in chậm
+    case 0:
+      scale = interpolate(frame, [0, durationInFrames], [1.08, 1.18], {
+        easing: ease,
+      });
+      break;
+
+    // 2. Zoom out nhẹ
+    case 1:
+      scale = interpolate(frame, [0, durationInFrames], [1.18, 1.08], {
+        easing: ease,
+      });
+      break;
+
+    // 3. Pan ngang rất chậm
+    case 2:
+      scale = 1.15;
+      x = interpolate(frame, [0, durationInFrames], [-25, 25]);
+      break;
+
+    // 4. Pan dọc nhẹ
+    case 3:
+      scale = 1.15;
+      y = interpolate(frame, [0, durationInFrames], [20, -20]);
+      break;
+
+    // 5. Depth drift (điện ảnh)
+    case 4:
+      scale = interpolate(frame, [0, durationInFrames], [1.12, 1.2]);
+      x = interpolate(frame, [0, durationInFrames], [-10, 10]);
+      y = interpolate(frame, [0, durationInFrames], [10, -10]);
+      break;
+  }
 
   return (
     <AbsoluteFill style={{ opacity }}>
@@ -40,10 +83,10 @@ export const ImageSlide: React.FC<Props> = ({
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          transform: `scale(${scale}) translateY(${translateY}px)`,
+          transform: `translate(${x}px, ${y}px) scale(${scale})`,
         }}
       />
-      {/* overlay nhẹ cho chữ */}
+      {/* overlay tối giúp đọc chữ */}
       <AbsoluteFill style={{ backgroundColor: "rgba(0,0,0,0.35)" }} />
     </AbsoluteFill>
   );
