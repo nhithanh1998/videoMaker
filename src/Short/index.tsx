@@ -21,7 +21,7 @@ export const Short: React.FC<ShortProps> = ({ audios }) => {
 
   // duration = audio + buffer 0.5–1s
   const durationsInFrames = audios.map((a) =>
-    Math.floor((a.duration + 0.7) * fps),
+    Math.floor((a.duration + 0.3) * fps),
   );
 
   const overlapFrames = Math.floor(0.7 * fps);
