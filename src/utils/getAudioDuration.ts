@@ -12,12 +12,12 @@ export const getAudioDurations = async (
   const audios: AudioItem[] = [];
 
   for (let i = 1; i <= count; i++) {
-    const filePath = staticFile(`shorts/chuong-${i}.wav`);
+    const filePath = staticFile(`shorts/${i}.MP3`);
 
     const audioData = await getAudioData(filePath);
 
     audios.push({
-      src: `/shorts/chuong-${i}.wav`,
+      src: `/shorts/${i}.MP3`,
       duration: audioData.durationInSeconds,
     });
   }
