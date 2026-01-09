@@ -2,54 +2,56 @@ import {
   AbsoluteFill,
   Sequence,
   staticFile,
+  useCurrentFrame,
   useVideoConfig,
 } from "remotion";
 import { ImageSlide } from "./ImageSlide";
 import { Caption } from "./Caption";
-import { TransitionFlash } from "./TransitionFlash";
 
 interface ShortProps {
-  images: number;       // số lượng hình, ví dụ 10
-  captions: string[];   // array 10 caption
+  images: number;
+  captions: string[];
 }
 
 export const Short: React.FC<ShortProps> = ({ images, captions }) => {
   const { fps } = useVideoConfig();
+  const frame = useCurrentFrame();
 
-  // Tạo array đường dẫn hình
   const imageList = Array.from(
     { length: images },
     (_, i) => `/shorts/hinh-${i + 1}.png`
   );
 
-  // Mỗi hình 4 giây
   const durationPerImage = 4 * fps;
+  const overlapFrames = Math.floor(0.7 * fps);
+  const step = durationPerImage - overlapFrames;
+
+  // Xác định caption hiện tại
+  const currentIndex = Math.min(
+    Math.floor(frame / step),
+    captions.length - 1
+  );
 
   return (
     <AbsoluteFill>
-      {imageList.map((img, i) => {
-        const from = i * durationPerImage; // tính vị trí xuất hiện
-
-        return (
-          <Sequence
-            key={i}
-            from={from}
+      {/* Image sequences */}
+      {imageList.map((img, i) => (
+        <Sequence
+          key={i}
+          from={i * step}
+          durationInFrames={durationPerImage}
+        >
+          <ImageSlide
+            src={staticFile(img)}
             durationInFrames={durationPerImage}
-          >
-            <ImageSlide
-              src={staticFile(img)}
-              durationInFrames={durationPerImage}
-              index={i}
-            />
-            <Caption text={captions[i] ?? ""} />
-          </Sequence>
-        );
-      })}
+            fadeFrames={overlapFrames}
+            index={i}
+          />
+        </Sequence>
+      ))}
 
-      {/* Flash transition cuối */}
-      <Sequence from={images * durationPerImage - 6} durationInFrames={6}>
-        <TransitionFlash />
-      </Sequence>
+      {/* Caption luôn đứng yên */}
+      <Caption text={captions[currentIndex] ?? ""} />
     </AbsoluteFill>
   );
 };

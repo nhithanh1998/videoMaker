@@ -1,36 +1,35 @@
-import {
-  AbsoluteFill,
-  Img,
-  interpolate,
-  useCurrentFrame,
-} from "remotion";
+import { AbsoluteFill, Img, interpolate, useCurrentFrame } from "remotion";
 
 interface Props {
   src: string;
   durationInFrames: number;
+  fadeFrames: number;
   index: number;
 }
 
 export const ImageSlide: React.FC<Props> = ({
   src,
   durationInFrames,
+  fadeFrames,
   index,
 }) => {
   const frame = useCurrentFrame();
 
+  // Fade in đầu – fade out cuối
   const opacity = interpolate(
     frame,
-    [0, 10, durationInFrames - 10, durationInFrames],
+    [0, fadeFrames, durationInFrames - fadeFrames, durationInFrames],
     [0, 1, 1, 0],
-    { extrapolateRight: "clamp" }
+    { extrapolate: "clamp" },
   );
 
-  const scale = interpolate(frame, [0, durationInFrames], [1, 1.12]);
+  // Ken Burns nhẹ
+  const scale = interpolate(frame, [0, durationInFrames], [1.05, 1.15]);
 
   const translateY = interpolate(
     frame,
     [0, durationInFrames],
-    index % 2 === 0 ? [0, -40] : [0, 40]
+    index % 2 === 0 ? [20, -20] : [-20, 20],
   );
 
   return (
@@ -44,6 +43,7 @@ export const ImageSlide: React.FC<Props> = ({
           transform: `scale(${scale}) translateY(${translateY}px)`,
         }}
       />
+      {/* overlay nhẹ cho chữ */}
       <AbsoluteFill style={{ backgroundColor: "rgba(0,0,0,0.35)" }} />
     </AbsoluteFill>
   );

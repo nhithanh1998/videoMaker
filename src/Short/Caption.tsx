@@ -1,33 +1,26 @@
-import {
-  AbsoluteFill,
-  interpolate,
-  useCurrentFrame,
-} from "remotion";
+import { AbsoluteFill } from "remotion";
 
-export const Caption = ({ text }: { text: string }) => {
-  const frame = useCurrentFrame();
-
-  const opacity = interpolate(frame, [0, 10], [0, 1]);
-  const translateY = interpolate(frame, [0, 10], [30, 0]);
-
+export const Caption: React.FC<{ text: string }> = ({ text }) => {
   return (
     <AbsoluteFill
       style={{
-        justifyContent: "center",
+        justifyContent: "flex-end",
         alignItems: "center",
-        padding: "0 80px",
-        textAlign: "center",
+        paddingBottom: 120,
+        pointerEvents: "none",
       }}
     >
       <div
         style={{
+          maxWidth: "90%",
+          padding: "16px 24px",
+          fontSize: 42,
+          fontWeight: 700,
           color: "white",
-          fontSize: 72,
-          fontWeight: 800,
-          lineHeight: 1.2,
-          opacity,
-          transform: `translateY(${translateY}px)`,
-          textShadow: "0 8px 40px rgba(0,0,0,0.6)",
+          textAlign: "center",
+          lineHeight: 1.3,
+          background: "rgba(0,0,0,0.55)",
+          borderRadius: 16,
         }}
       >
         {text}
